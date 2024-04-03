@@ -15,3 +15,6 @@ I am not held up for guilty if anyone sends personal data over the chat.\
 
 ## Setting up the server
 
+Taking all needed Spring Boot to create the RESTful API endpoints for CRUD operations and health status checks.
+That can easily be done here [springboot initializr](https://start.spring.io/).
+Used Spring Boot : **Spring Data MongoDB**, **Spring Web**
