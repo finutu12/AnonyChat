@@ -5,6 +5,8 @@ import org.example.demo.repossitory.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MessageService {
 
@@ -16,5 +18,9 @@ public class MessageService {
 
     public Message saveMessage(Message message) {
         return messageRepository.save(message);
+    }
+
+    public List<Message> findByUserIDAndChatSessionID(Integer UserID, Integer ChatSessionID) {
+        return messageRepository.findAllByUserIdAndChatSessionId(UserID, ChatSessionID);
     }
 }

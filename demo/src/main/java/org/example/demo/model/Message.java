@@ -30,15 +30,13 @@ public class Message {
     private Integer id;
 
     private String content;
-    private Timestamp timestamp;
+    private Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_id")
     private ChatSession chatSession;
     // Other message attributes
