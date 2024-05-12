@@ -9,6 +9,9 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.HashSet;
+import java.util.Set;
+
 
 @Getter
 @Setter
@@ -34,5 +37,9 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_id")
     private ChatSession chatSession;
+
+    @JsonIgnore
+    @OneToMany(mappedBy="user", fetch = FetchType.LAZY)
+    private Set<Message> messages = new HashSet<>();
 
 }

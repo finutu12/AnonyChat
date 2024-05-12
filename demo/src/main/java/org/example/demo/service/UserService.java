@@ -31,4 +31,6 @@ public class UserService {
     public List<User> findAllByChatSessionId(Integer id) {
         return this.userRepository.findAllByChatSessionId(id);
     }
+
+    public User findById(Integer id) { return this.userRepository.findById(id).orElse(null);}
 }

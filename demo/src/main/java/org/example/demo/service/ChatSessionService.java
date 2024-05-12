@@ -5,6 +5,8 @@ import org.example.demo.repossitory.ChatSessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ChatSessionService {
     private final ChatSessionRepository chatSessionRepository;
@@ -17,7 +19,10 @@ public class ChatSessionService {
     public ChatSession saveChatSession(ChatSession chatSession) {
         return chatSessionRepository.save(chatSession);
     }
-
+    public List<ChatSession> getFreeChatSession() {return chatSessionRepository.findChatSessionsWithSingleUser();}
+    public void deleteAll(List<ChatSession> chatSessionList) {this.chatSessionRepository.deleteAll();}
+    public List<ChatSession> getEmptyChatSession() {return chatSessionRepository.findEmptySessions();}
+    public ChatSession save(ChatSession chatSession) {return chatSessionRepository.save(chatSession);}
     public ChatSession getChatSessionById(Integer id) {
         return chatSessionRepository.findById(id).orElse(null);
     }

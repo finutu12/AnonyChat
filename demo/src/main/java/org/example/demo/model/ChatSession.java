@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.logging.log4j.message.Message;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -37,11 +36,18 @@ public class ChatSession {
     private String name;
     
     @JsonIgnore
-    @OneToMany(mappedBy="chatSession", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="chatSession", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<User> users = new HashSet<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy="chatSession", fetch = FetchType.LAZY)
+    private Set<Message> messages = new HashSet<>();
 
 //    private List<Message> messages;
     // Other session attributes
 
     // Constructors, getters, and setters
+    public ChatSession(String name){
+        this.name = name;
+    }
 }
