@@ -1,15 +1,19 @@
 package org.example.demo.controller;
 
+import com.mysql.cj.x.protobuf.Mysqlx;
 import org.example.demo.model.ChatSession;
 import org.example.demo.model.User;
 import org.example.demo.repossitory.ChatSessionRepository;
 import org.example.demo.service.ChatSessionService;
 import org.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.SecureRandom;
 import java.util.List;
+
 
 @RestController
 @RequestMapping(value = "/chat")
@@ -49,7 +53,7 @@ public class ChatController {
         return "Hello User " + id;
     }
     @PostMapping("/freeSession")
-    public ChatSession returnFreeChatSessions(@RequestBody Integer id) {
+    public ResponseEntity<ChatSession> returnFreeChatSessions(@RequestBody Integer id) {
         List<ChatSession> freeChatSessions = this.chatSessionService.getFreeChatSession();
         User user = this.userService.findById(id);
         if(freeChatSessions.size() > 1){
@@ -57,7 +61,7 @@ public class ChatController {
             firstChatSession.getUsers().add(user);
             user.setChatSession(firstChatSession);
             this.chatSessionService.saveChatSession(firstChatSession);
-            return firstChatSession;
+            return new ResponseEntity<>(firstChatSession, HttpStatus.OK);
         }
         else{
             ChatSession chatSession = new ChatSession(generateRandomString(25));
@@ -65,7 +69,7 @@ public class ChatController {
             chatSession.getUsers().add(user);
             user.setChatSession(chatSession);
             this.chatSessionService.saveChatSession(chatSession);
-            return chatSession;
+            return new ResponseEntity<>(chatSession, HttpStatus.OK);
         }
     }
 

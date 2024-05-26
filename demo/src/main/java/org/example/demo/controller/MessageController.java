@@ -29,7 +29,7 @@ public class MessageController {
     }
 
 
-    @PostMapping("/get")
+    @PostMapping("/sendMessage")
     public Message saveMessage(@RequestBody Message message) {
         return this.messageService.saveMessage(message);
     }
@@ -39,4 +39,5 @@ public class MessageController {
 
         return DTOUtils.mapList(this.messageService.findByUserIDAndChatSessionID(message.getUser().getId(), message.getChatSession().getId()), MessageDTO.class);
     }
+
 }

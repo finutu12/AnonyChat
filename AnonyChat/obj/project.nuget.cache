@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "n1St8kZf2QZA/tHQmrhtFyxcfg56pw2CwBnH7RV8yKlWdK5760kkslMhS5D4PCd0DMXvmV4oEtVq/pEaB9hpnw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Edu\\Documents\\GitHub\\AnonyChat\\AnonyChat\\AnonyChat.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Edu\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
