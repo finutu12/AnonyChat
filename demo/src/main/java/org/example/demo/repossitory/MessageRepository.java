@@ -10,4 +10,5 @@ import java.util.List;
 public interface MessageRepository extends JpaRepository<Message, Integer> {
     List<Message> findAllByUserIdAndChatSessionId(Integer UserId, Integer ChatSessionId);
 
+    List<Message> findAllByChatSessionId(Integer chatSessionID);
 }

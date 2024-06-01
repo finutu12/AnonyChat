@@ -45,3 +45,14 @@ C:\Users\Edu\Documents\GitHub\AnonyChat\AnonyChat\obj\Debug\net8.0-windows\Anony
 C:\Users\Edu\Documents\GitHub\AnonyChat\AnonyChat\bin\Debug\net8.0-windows\Newtonsoft.Json.dll
 C:\Users\Edu\Documents\GitHub\AnonyChat\AnonyChat\obj\Debug\net8.0-windows\AnonyChat.csproj.CopyComplete
 C:\Users\Edu\Documents\GitHub\AnonyChat\AnonyChat\bin\Debug\net8.0-windows\AnonyChat.dll.config
+C:\Users\Edu\Documents\GitHub\AnonyChat\AnonyChat\bin\Debug\net8.0-windows\Extend.dll
+C:\Users\Edu\Documents\GitHub\AnonyChat\AnonyChat\bin\Debug\net8.0-windows\Stomp.Net.dll
+C:\Users\Edu\Documents\GitHub\AnonyChat\AnonyChat\bin\Debug\net8.0-windows\websocket-sharp.dll
+C:\Users\Edu\Documents\GitHub\AnonyChat\AnonyChat\bin\Debug\net8.0-windows\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\Edu\Documents\GitHub\AnonyChat\AnonyChat\bin\Debug\net8.0-windows\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\Edu\Documents\GitHub\AnonyChat\AnonyChat\bin\Debug\net8.0-windows\Microsoft.IO.RecyclableMemoryStream.dll
+C:\Users\Edu\Documents\GitHub\AnonyChat\AnonyChat\bin\Debug\net8.0-windows\System.Reactive.dll
+C:\Users\Edu\Documents\GitHub\AnonyChat\AnonyChat\bin\Debug\net8.0-windows\Websocket.Client.dll
+C:\Users\Edu\Documents\GitHub\AnonyChat\AnonyChat\bin\Debug\net8.0-windows\SuperSocket.ClientEngine.dll
+C:\Users\Edu\Documents\GitHub\AnonyChat\AnonyChat\bin\Debug\net8.0-windows\WebSocket4Net.dll
+C:\Users\Edu\Documents\GitHub\AnonyChat\AnonyChat\bin\Debug\net8.0-windows\Fleck.dll

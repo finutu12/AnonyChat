@@ -15,6 +15,17 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using AnonyChat.Properties;
 using System.Dynamic;
+using Stomp.Net;
+using System.Collections.ObjectModel;
+using System.Net.WebSockets;
+using System.Net;
+using System.Runtime.InteropServices.JavaScript;
+using System.Security.Policy;
+using System.Threading;
+using WebSocketSharp;
+using Websocket.Client;
+using System.Reactive.Linq;
+using System.Runtime.CompilerServices;
 
 
 namespace AnonyChat
@@ -25,12 +36,14 @@ namespace AnonyChat
     public partial class MainWindow : Window
     {
         private static readonly HttpClient client = new HttpClient();
+        List<Message> ms = new List<Message>();
+
         public MainWindow()
         {
             InitializeComponent();
             Window1 window1 = new Window1();
             window1.ShowDialog();
-            
+
             if (window1.DialogResult == true)
             {
                 usernameLabel.Content = Settings.Default.username;
@@ -52,31 +65,74 @@ namespace AnonyChat
             findChatButton.Visibility = Visibility.Visible;
             leaveChatButton.Visibility = Visibility.Hidden;
         }
-        private async void getFreeChatSession()
+
+        private void addMessageToChat(string message)
         {
-            string apiUrl = "http://localhost:8080/chat/freeSession";
             TextBlock textBlock = new TextBlock();
             messageList.Children.Add(textBlock);
+            textBlock.Text = message;
+            textBlock.Foreground = Brushes.White;
+        }
 
+        private async void getFreeChatSession()
+        {
             try
             {
                 ChatSession chatSession = await SendPostRequestAsync(Settings.Default.userID);
-                textBlock.Text = "You have been connected to: " + chatSession.Name;
-                textBlock.Foreground = Brushes.White;
                 Settings.Default.chatID = chatSession.Id;
                 Settings.Default.Save();
+                this.addMessageToChat("You have been connected to: " + chatSession.Name);
+                await this.UpdateChat();
             }
             catch (Exception ex)
             {
-                textBlock.Text = $"Error: {ex.Message}";
+                this.addMessageToChat($"Error: {ex.Message}");
             }
         }
+
+        async Task UpdateChat()
+        {
+
+            while (Settings.Default.chatID != 0)
+            {
+                Console.WriteLine("Function executed at: " + DateTime.Now);
+                List<Message> messages = await this.GetMessages(Settings.Default.chatID);
+                foreach (Message message in messages)
+                {
+                    if(!this.ms.Any(obj => obj.id == message.id))
+                    {
+                        this.addMessageToChat(message.content);
+                    }
+                }
+
+                this.ms = messages;
+                // Call your asynchronous function here
+
+                await Task.Delay(5000); // 5 seconds
+            }
+        }
+
         private async Task<string> FetchDataFromApi(string url)
         {
             HttpResponseMessage response = await client.GetAsync(url);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
             return responseBody;
+        }
+
+        private async Task<List<Message>> GetMessages(int sessionId)
+        {
+            string apiUrl = "http://localhost:8080/message/getMessages";
+
+            // Create JSON payload
+            var content = new StringContent(JsonSerializer.Serialize(sessionId), Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
+            response.EnsureSuccessStatusCode();
+
+            // Deserialize the response to User object
+            List<Message> messages = await response.Content.ReadFromJsonAsync<List<Message>>();
+            return messages;
         }
 
         private async Task<ChatSession> SendPostRequestAsync(int userId)
@@ -96,12 +152,11 @@ namespace AnonyChat
 
         private async void SendButton(object sender, RoutedEventArgs e)
         {
-            String temp = MessageTextBox.Text;
-            Message message = await SendMessage(new Message(temp, new User(Settings.Default.userID), new ChatSession(Settings.Default.chatID)));
-            TextBlock textBlock = new TextBlock();
-            textBlock.Text = message.content;
-            messageList.Children.Add(textBlock);
+            String sentMessage = MessageTextBox.Text;
+            Message message = await SendMessage(new Message(sentMessage, new User(Settings.Default.userID), new ChatSession(Settings.Default.chatID)));
+            this.addMessageToChat(message.content);
         }
+
         private async Task<Message> SendMessage(Message message)
         {
             string apiUrl = "http://localhost:8080/message/sendMessage";

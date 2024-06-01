@@ -23,4 +23,8 @@ public class MessageService {
     public List<Message> findByUserIDAndChatSessionID(Integer UserID, Integer ChatSessionID) {
         return messageRepository.findAllByUserIdAndChatSessionId(UserID, ChatSessionID);
     }
+
+    public List<Message> findByChatSessionID(Integer ChatSessionID) {
+        return messageRepository.findAllByChatSessionId(ChatSessionID);
+    }
 }
