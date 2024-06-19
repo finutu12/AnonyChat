@@ -15,4 +15,6 @@ public interface ChatSessionRepository extends JpaRepository<ChatSession, Intege
 
     @Query("SELECT cs FROM ChatSession cs WHERE SIZE(cs.users) = 0")
     List<ChatSession> findEmptySessions();
+
+    ChatSession findByUsersIdIn(List<Integer> id);
 }

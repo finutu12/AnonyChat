@@ -19,12 +19,37 @@ public class ChatSessionService {
     public ChatSession saveChatSession(ChatSession chatSession) {
         return chatSessionRepository.save(chatSession);
     }
-    public List<ChatSession> getFreeChatSession() {return chatSessionRepository.findChatSessionsWithSingleUser();}
-    public void deleteAll(List<ChatSession> chatSessionList) {this.chatSessionRepository.deleteAll();}
-    public List<ChatSession> getEmptyChatSession() {return chatSessionRepository.findEmptySessions();}
-    public ChatSession save(ChatSession chatSession) {return chatSessionRepository.save(chatSession);}
+
+    public List<ChatSession> getFreeChatSession() {
+        return chatSessionRepository.findChatSessionsWithSingleUser();
+    }
+
+    public void deleteAll(List<ChatSession> chatSessionList) {
+        this.chatSessionRepository.deleteAll();
+    }
+
+    public List<ChatSession> getEmptyChatSession() {
+        return chatSessionRepository.findEmptySessions();
+    }
+
+    public ChatSession save(ChatSession chatSession) {
+        return chatSessionRepository.save(chatSession);
+    }
+
     public ChatSession getChatSessionById(Integer id) {
         return chatSessionRepository.findById(id).orElse(null);
+    }
+
+    public ChatSession findById(Integer id) {
+        return this.chatSessionRepository.findById(id).orElse(null);
+    }
+
+    public void delete(ChatSession chatSession) {
+        chatSessionRepository.delete(chatSession);
+    }
+
+    public ChatSession findByUser(Integer id) {
+        return this.chatSessionRepository.findByUsersIdIn(List.of(id));
     }
 
     // Other methods as needed

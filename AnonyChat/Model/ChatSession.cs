@@ -12,6 +12,7 @@ namespace AnonyChat.Model
         {
             this.Id = id;
         }
+        public ChatSession() { }
 
         public int Id { get; set; }
         public string Name { get; set; }

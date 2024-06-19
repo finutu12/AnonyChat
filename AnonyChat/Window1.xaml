@@ -5,15 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AnonyChat"
         mc:Ignorable="d"
-        Title="UserWindow" MinHeight="300" MinWidth="300" MaxHeight="300" MaxWidth="300">
+        Icon="Assets\IconRegister.png"
+        Title="Registration" MinHeight="300" MinWidth="300" MaxHeight="300" MaxWidth="300">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="203*"/>
             <ColumnDefinition Width="97*"/>
         </Grid.ColumnDefinitions>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="24,220,0,0" VerticalAlignment="Top" Click="AddUser" RenderTransformOrigin="-0.198,0.502" Grid.Column="1"/>
-        <TextBox x:Name="usernameTextBox" HorizontalAlignment="Left" Margin="25,221,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="168"/>
-        <Label Content="To journey further into our realm, you must&#xA;first embark on the path of registration. Your&#xA;anonymity, veiled behind the cloak of an&#xA;enigmatic name, shall be your shield. As we&#xA;delve into the depths of our domain, let&#xA; your chosen guise guide you through the&#xA; unknown. Fear not, for it is but a small &#xD;&#xA;step towards unlocking the mysteries that&#xD;&#xA; await. Dare to register, and let the&#xD;&#xA; adventure begin!" HorizontalAlignment="Left" Margin="19,26,0,0" VerticalAlignment="Top" Height="174" Width="252" Grid.ColumnSpan="2"/>
+        <Button Content="Register" x:Name="RegisterButton" HorizontalAlignment="Left" Margin="24,220,0,0" VerticalAlignment="Top" Click="AddUser" RenderTransformOrigin="-0.198,0.502" Grid.Column="1"/>
+        <TextBox x:Name="usernameTextBox" HorizontalAlignment="Left" Margin="25,221,0,0" TextWrapping="Wrap" Text="Anonymous" VerticalAlignment="Top" Width="168" TextChanged="usernameTextBox_TextChanged"/>
+        <Label Content="To journey further into our realm, you must&#xA;first embark on the path of registration. Your&#xA;anonymity, veiled behind the cloak of an&#xA;enigmatic name, shall be your shield. As we&#xA;delve into the depths of our domain, let&#xA; your chosen disguise guide you through the&#xA; unknown. Fear not, for it is but a small &#xD;&#xA;step towards unlocking the mysteries that&#xD;&#xA; await. Dare to register, and let the&#xD;&#xA; adventure begin!" HorizontalAlignment="Left" Margin="19,26,0,0" VerticalAlignment="Top" Height="174" Width="252" Grid.ColumnSpan="2"/>
+        <Label Content="Name:" FontWeight="Bold" HorizontalAlignment="Left" Margin="22,200,0,0" VerticalAlignment="Top"/>
+        <Label Name="TextLength" Content="*Invalid name (3 - 20 letters)" Visibility="Hidden" FontWeight="Bold" Foreground="Red" FontSize="9" HorizontalAlignment="Left" Margin="22,236,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

@@ -60,10 +60,25 @@ namespace AnonyChat
             leaveChatButton.Visibility = Visibility.Visible;
             getFreeChatSession();
         }
-        private void LeaveChatButton(object sender, RoutedEventArgs e)
+        private async void LeaveChatButton(object sender, RoutedEventArgs e)
         {
             findChatButton.Visibility = Visibility.Visible;
             leaveChatButton.Visibility = Visibility.Hidden;
+            User user = new User(Settings.Default.userID);
+            ChatSession chatSession = new ChatSession(Settings.Default.chatID);
+           // Message message = await SendMessage(new Message("Partner left the chat :(", user, chatSession));
+            //this.addMessageToChat(message.content);
+            LeaveChat(user);
+        }
+
+        private async void LeaveChat(User user)
+        {
+            string apiUrl = "http://localhost:8080/chat/leave";
+            // Create JSON payload
+            var content = new StringContent(System.Text.Json.JsonSerializer.Serialize(user), Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
+            response.EnsureSuccessStatusCode();
         }
 
         private void addMessageToChat(string message)

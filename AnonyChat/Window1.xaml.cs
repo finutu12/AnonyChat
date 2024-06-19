@@ -56,5 +56,25 @@ namespace AnonyChat
             user = await response.Content.ReadFromJsonAsync<User>();
             return user;
         }
+
+        private void usernameTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if(usernameTextBox.Text.Length >= 3 && usernameTextBox.Text.Length <= 20)
+            {
+                RegisterButton.IsEnabled = true;
+                if (TextLength is not null)
+                {
+                    TextLength.Visibility = Visibility.Hidden;
+                }
+            }
+            else
+            {
+                RegisterButton.IsEnabled = false;
+                if(TextLength is not null)
+                {
+                    TextLength.Visibility = Visibility.Visible;
+                }
+            }
+        }
     }
 }
