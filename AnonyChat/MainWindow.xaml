@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:AnonyChat"
         mc:Ignorable="d"
         Icon="Assets\Icon.png"
-        Title="AnonyChat" Height="450" Width="800" MinHeight="350" MinWidth="500">
+        Title="AnonyChat" Height="450" Width="800" MinHeight="350" MinWidth="500" Closing="Window_Closing">
     <Window.Background>
         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
             <GradientStop Color="#1E1E1E" Offset="0"/>

@@ -1,59 +1,39 @@
 ﻿using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Net.Http;
 using System.Threading.Tasks;
-using AnonyChat.Model;
 using System.Net.Http.Json;
 using System.Text.Json;
+using AnonyChat.Model;
 using AnonyChat.Properties;
-using System.Dynamic;
-using Stomp.Net;
-using System.Collections.ObjectModel;
-using System.Net.WebSockets;
-using System.Net;
-using System.Runtime.InteropServices.JavaScript;
-using System.Security.Policy;
-using System.Threading;
-using WebSocketSharp;
-using Websocket.Client;
-using System.Reactive.Linq;
-using System.Runtime.CompilerServices;
-
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Media;
+using System.ComponentModel;
 
 namespace AnonyChat
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private static readonly HttpClient client = new HttpClient();
-        List<Message> ms = new List<Message>();
+        private List<Message> messagesList = new List<Message>();
         private bool leftChat = false;
 
         public MainWindow()
         {
             InitializeComponent();
-            Window1 window1 = new Window1();
+            var window1 = new Window1();
             window1.ShowDialog();
 
             if (window1.DialogResult == true)
             {
-                usernameTextBlock.Text = "Welcome " + Settings.Default.username;
+                usernameTextBlock.Text = $"Welcome {Settings.Default.username}";
             }
             else
             {
                 MessageBox.Show("Dialog window was closed with Cancel.");
             }
-           
         }
 
         private void FindChatButton(object sender, RoutedEventArgs e)
@@ -62,34 +42,53 @@ namespace AnonyChat
             leaveChatButton.Visibility = Visibility.Visible;
             getFreeChatSession();
         }
+
         private async void LeaveChatButton(object sender, RoutedEventArgs e)
         {
             findChatButton.Visibility = Visibility.Visible;
             leaveChatButton.Visibility = Visibility.Hidden;
             User user = new User(Settings.Default.userID);
-            ChatSession chatSession = new ChatSession(Settings.Default.chatID);
-           // Message message = await SendMessage(new Message("Partner left the chat :(", user, chatSession));
-            //this.addMessageToChat(message.content);
-            LeaveChat(user);
+            await LeaveChat(user);
             leftChat = true;
         }
 
-        private async void LeaveChat(User user)
+        private async Task LeaveChat(User user)
         {
             string apiUrl = "http://localhost:8080/chat/leave";
-            // Create JSON payload
-            var content = new StringContent(System.Text.Json.JsonSerializer.Serialize(user), Encoding.UTF8, "application/json");
+            var content = new StringContent(JsonSerializer.Serialize(user), Encoding.UTF8, "application/json");
 
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
             response.EnsureSuccessStatusCode();
+            this.addMessageToChat(new Message("You have left the chat."));
         }
 
-        private void addMessageToChat(string message)
+        private void addMessageToChat(Message message, HorizontalAlignment alignment = HorizontalAlignment.Left)
         {
-            TextBlock textBlock = new TextBlock();
-            messageList.Children.Add(textBlock);
-            textBlock.Text = message;
-            textBlock.Foreground = Brushes.White;
+            TextBlock textBlock = new TextBlock
+            {
+                Text = message.content,
+                Foreground = Brushes.Black,
+                FontSize = 15,
+                Margin = new Thickness(10),
+            };
+            Border messageBubble = new Border
+            {
+                CornerRadius = new CornerRadius(15),
+                Padding = new Thickness(10),
+                Margin = new Thickness(5),
+                Child = textBlock
+            };
+            if (alignment == HorizontalAlignment.Left)
+            {
+                messageBubble.Background = Brushes.LightBlue;
+            }
+            else
+            {
+                messageBubble.Background = Brushes.LightGreen;
+            }
+            textBlock.HorizontalAlignment = alignment;
+            messageList.Children.Add(messageBubble);
+            messagesList.Add(message);
         }
 
         private async void getFreeChatSession()
@@ -99,35 +98,62 @@ namespace AnonyChat
                 ChatSession chatSession = await SendPostRequestAsync(Settings.Default.userID);
                 Settings.Default.chatID = chatSession.Id;
                 Settings.Default.Save();
-                if (chatSession.)
-                    usernameTextBlock.Text = "";
-                this.addMessageToChat("You have been connected to: " + chatSession.Name);
-                await this.UpdateChat();
+
+                this.addMessageToChat(new Message($"You have been connected to: {chatSession.Name}"));
+                await UpdateChat();
             }
             catch (Exception ex)
             {
-                this.addMessageToChat($"Error: {ex.Message}");
+                this.addMessageToChat(new Message($"Error: {ex.Message}"));
             }
         }
 
         async Task UpdateChat()
         {
-
             while (Settings.Default.chatID != 0)
             {
-                Console.WriteLine("Function executed at: " + DateTime.Now);
-                List<Message> messages = await this.GetMessages(Settings.Default.chatID);
-                foreach (Message message in messages)
+                try
                 {
-                    if(!this.ms.Any(obj => obj.id == message.id))
+                    Console.WriteLine($"Function executed at: {DateTime.Now}");
+                    List<Message> messages = await GetMessages(Settings.Default.chatID);
+                    foreach (Message message in messages)
                     {
-                        this.addMessageToChat(message.content);
+                        if (!messagesList.Any(m => m.id == message.id))
+                        {
+                           
+                            this.addMessageToChat(message);
+                                   
+                        }
                     }
+
+                    messagesList = messages;
+                    await Task.Delay(2500);
                 }
+                catch (Exception ex)
+                {
+                    this.addMessageToChat(new Message($"Error while updating chat: {ex.Message}"));
+                    break;
+                }
+            }
+        }
 
-                this.ms = messages;
+        private async void Window_Closing(object sender, CancelEventArgs e)
+        {
+            if (leaveChatButton.Visibility == Visibility.Visible)
+            {
+                // Show a confirmation dialog
+                var result = MessageBox.Show("You will be disconnected from the chat. Proceed?", "Confirm Close", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-                await Task.Delay(5000);
+                if (result == MessageBoxResult.No)
+                {
+                    // Cancel the closing event
+                    e.Cancel = true;
+                }
+                else
+                {
+                    User user = new User(Settings.Default.userID);
+                    await LeaveChat(user);
+                }
             }
         }
 
@@ -135,23 +161,19 @@ namespace AnonyChat
         {
             HttpResponseMessage response = await client.GetAsync(url);
             response.EnsureSuccessStatusCode();
-            string responseBody = await response.Content.ReadAsStringAsync();
-            return responseBody;
+            return await response.Content.ReadAsStringAsync();
         }
 
         private async Task<List<Message>> GetMessages(int sessionId)
         {
             string apiUrl = "http://localhost:8080/message/getMessages";
 
-            // Create JSON payload
             var content = new StringContent(JsonSerializer.Serialize(sessionId), Encoding.UTF8, "application/json");
 
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
             response.EnsureSuccessStatusCode();
 
-            // Deserialize the response to User object
-            List<Message> messages = await response.Content.ReadFromJsonAsync<List<Message>>();
-            return messages;
+            return await response.Content.ReadFromJsonAsync<List<Message>>();
         }
 
         private async Task<ChatSession> SendPostRequestAsync(int userId)
@@ -163,28 +185,36 @@ namespace AnonyChat
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
             response.EnsureSuccessStatusCode();
 
-            ChatSession chatSession = await response.Content.ReadFromJsonAsync<ChatSession>();
-            return chatSession;
+            return await response.Content.ReadFromJsonAsync<ChatSession>();
         }
 
         private async void SendButton(object sender, RoutedEventArgs e)
         {
-            String sentMessage = MessageTextBox.Text;
-            Message message = await SendMessage(new Message(sentMessage, new User(Settings.Default.userID), new ChatSession(Settings.Default.chatID)));
-            this.addMessageToChat(message.content);
+            string sentMessage = MessageTextBox.Text.Trim();
+            if (!string.IsNullOrEmpty(sentMessage))
+            {
+                Message message = await SendMessage(new Message(sentMessage, new User(Settings.Default.userID), new ChatSession(Settings.Default.chatID)));
+                this.addMessageToChat(message, HorizontalAlignment.Right);
+                MessageTextBox.Clear();
+            }
         }
 
         private async Task<Message> SendMessage(Message message)
         {
+
             string apiUrl = "http://localhost:8080/message/sendMessage";
+            int param1 = message.chatSession.Id;
+            int param2 = message.user.id;
+            string param3 = message.content;
 
-            var content = new StringContent(System.Text.Json.JsonSerializer.Serialize(message), Encoding.UTF8, "application/json");
+            string url = $"{apiUrl}?chatSessionId={param1}&userId={param2}&messageContent={param3}";
 
-            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
+            var content = new StringContent(JsonSerializer.Serialize(message), Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await client.GetAsync(url);
             response.EnsureSuccessStatusCode();
 
-            message = await response.Content.ReadFromJsonAsync<Message>();
-            return message;
+            return await response.Content.ReadFromJsonAsync<Message>();
         }
     }
 }

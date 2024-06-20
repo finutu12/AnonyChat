@@ -24,6 +24,10 @@ namespace AnonyChat.Model
         {
 
         }
+        public Message(string content)
+        {
+            this.content = content;
+        }
 
     }
 }

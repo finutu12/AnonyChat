@@ -30,11 +30,12 @@ public class MessageController {
     }
 
 
-    @PostMapping("/sendMessage")
-    public Message saveMessage(@RequestBody Message message) {
-        final Message m = this.messageService.saveMessage(message);
-        this.stompMessageService.sendTo(message.getContent(),"/greetings");
-        return m;
+    @GetMapping("/sendMessage")
+    public Message saveMessage(@RequestParam Integer chatSessionId, @RequestParam Integer userId, @RequestParam String messageContent) {
+        User user = this.userService.findById(userId);
+        ChatSession chatSession = this.chatSessionService.findById(chatSessionId);
+        Message message = new Message(messageContent, user, chatSession);
+        return this.messageService.saveMessage(message);
     }
 
     @PostMapping("/getMessages")

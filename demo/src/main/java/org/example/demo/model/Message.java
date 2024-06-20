@@ -1,6 +1,5 @@
 package org.example.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +8,6 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
@@ -39,6 +37,14 @@ public class Message {
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_id")
     private ChatSession chatSession;
+
+    public Message(String messageContent, User user, ChatSession chatSession) {
+        this.content = messageContent;
+        this.user = user;
+        this.chatSession = chatSession;
+    }
+
+
     // Other message attributes
 
     // Constructors, getters, and setters
