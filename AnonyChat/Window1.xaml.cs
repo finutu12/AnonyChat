@@ -42,6 +42,9 @@ namespace AnonyChat
             DialogResult = true;
             this.Close();
         }
+
+
+
         private async Task<User> SendPostRequestAsync(User user)
         {
             string apiUrl = "http://localhost:8080/user/getUser";

@@ -37,6 +37,7 @@ namespace AnonyChat
     {
         private static readonly HttpClient client = new HttpClient();
         List<Message> ms = new List<Message>();
+        private bool leftChat = false;
 
         public MainWindow()
         {
@@ -46,12 +47,13 @@ namespace AnonyChat
 
             if (window1.DialogResult == true)
             {
-                usernameLabel.Content = Settings.Default.username;
+                usernameTextBlock.Text = "Welcome " + Settings.Default.username;
             }
             else
             {
                 MessageBox.Show("Dialog window was closed with Cancel.");
             }
+           
         }
 
         private void FindChatButton(object sender, RoutedEventArgs e)
@@ -69,6 +71,7 @@ namespace AnonyChat
            // Message message = await SendMessage(new Message("Partner left the chat :(", user, chatSession));
             //this.addMessageToChat(message.content);
             LeaveChat(user);
+            leftChat = true;
         }
 
         private async void LeaveChat(User user)
@@ -96,6 +99,8 @@ namespace AnonyChat
                 ChatSession chatSession = await SendPostRequestAsync(Settings.Default.userID);
                 Settings.Default.chatID = chatSession.Id;
                 Settings.Default.Save();
+                if (chatSession.)
+                    usernameTextBlock.Text = "";
                 this.addMessageToChat("You have been connected to: " + chatSession.Name);
                 await this.UpdateChat();
             }
@@ -121,9 +126,8 @@ namespace AnonyChat
                 }
 
                 this.ms = messages;
-                // Call your asynchronous function here
 
-                await Task.Delay(5000); // 5 seconds
+                await Task.Delay(5000);
             }
         }
 
@@ -154,13 +158,11 @@ namespace AnonyChat
         {
             string apiUrl = "http://localhost:8080/chat/freeSession";
 
-            // Create JSON payload
             var content = new StringContent(JsonSerializer.Serialize(userId), Encoding.UTF8, "application/json");
 
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
             response.EnsureSuccessStatusCode();
 
-            // Deserialize the response to User object
             ChatSession chatSession = await response.Content.ReadFromJsonAsync<ChatSession>();
             return chatSession;
         }
@@ -176,13 +178,11 @@ namespace AnonyChat
         {
             string apiUrl = "http://localhost:8080/message/sendMessage";
 
-            // Create JSON payload
             var content = new StringContent(System.Text.Json.JsonSerializer.Serialize(message), Encoding.UTF8, "application/json");
 
             HttpResponseMessage response = await client.PostAsync(apiUrl, content);
             response.EnsureSuccessStatusCode();
 
-            // Deserialize the response to User object
             message = await response.Content.ReadFromJsonAsync<Message>();
             return message;
         }

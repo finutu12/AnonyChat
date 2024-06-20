@@ -8,6 +8,7 @@ namespace AnonyChat.Model
 {
     public class ChatSession
 {
+        public List<User> Users { get; set; }
         public ChatSession(int id)
         {
             this.Id = id;
