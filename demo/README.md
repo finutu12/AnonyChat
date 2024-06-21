@@ -25,7 +25,6 @@ Initially the messaging was supposed to work via a Websocket that sent messages 
 There was a version conflict that did not let me use Websocket and I came up with the idea that the users should just get the unique messages that have been stored in the meantime. This proccess is done using a delay of 2.5 seconds and works. Despite being a bit of a delay, it was a good implementation and change since I wouldn't have been done with the project otherwise.
 
 ## Table of Contents
-- [Introduction](#introduction)
 - [Architecture](#architecture)
 - [Communication Flow](#communication-flow)
   - [WPF Client](#wpf-client)
