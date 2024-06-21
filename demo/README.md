@@ -15,6 +15,15 @@ I am not held responsible if anyone sends personal data over the chat.\
 
 AnonyChat is a chat application that allows users to connect and chat anonymously. It is built using C# for the frontend and Java (Spring Boot) for the backend.
 
+#Notice:
+
+I initially wanted to use MongoDB as database, but later found some issues with the connection string.
+Before looking into that further and trying to find problematic causes, I decided to switch to MySQL Workbench.
+Trying SQL worked instantly and saved me a lot of time.
+
+Initially the messaging was supposed to work via a Websocket that sent messages in real time to the users.
+There was a version conflict that did not let me use Websocket and I came up with the idea that the users should just get the unique messages that have been stored in the meantime. This proccess is done using a delay of 2.5 seconds and works. Despite being a bit of a delay, it was a good implementation and change since I wouldn't have been done with the project otherwise.
+
 ## Table of Contents
 - [Introduction](#introduction)
 - [Architecture](#architecture)
