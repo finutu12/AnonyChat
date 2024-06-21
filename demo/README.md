@@ -4,178 +4,66 @@
 
 ## Initial idea
 
-Anonymous chat where people can enjoy eachother's company for a limited amount of time.
+Anonymous chat where people can enjoy each other's company for a limited amount of time.
 Basically a meet-up app. You get to find people and possible friends.
 Though be careful!
 
 **Disclaimer**
 
-I am not held up for guilty if anyone sends personal data over the chat.\
+I am not held responsible if anyone sends personal data over the chat.\
 ``Never Do That``
-
 
 AnonyChat is a chat application that allows users to connect and chat anonymously. It is built using C# for the frontend and Java (Spring Boot) for the backend.
 
 ## Table of Contents
-- [Features](#features)
-- [Frontend](#frontend)
-  - [Classes](#classes)
-- [Backend](#backend)
-  - [Controllers](#controllers)
-  - [Models](#models)
-  - [Repositories](#repositories)
-  - [Services](#services)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-  - [Running the Application](#running-the-application)
+- [Introduction](#introduction)
+- [Architecture](#architecture)
+- [Communication Flow](#communication-flow)
+  - [WPF Client](#wpf-client)
+  - [Backend API](#backend-api)
+  - [Database](#database)
 - [API Endpoints](#api-endpoints)
+  - [ChatController](#chatcontroller)
+  - [MessageController](#messagecontroller)
+  - [UserController](#usercontroller)
+- [Database Schema](#database-schema)
+- [Code Walkthrough](#code-walkthrough)
+  - [MainWindow.xaml.cs](#mainwindowxamlcs)
+  - [Window1.xaml.cs](#window1xamlcs)
+- [UML Diagrams](#uml-diagrams)
+  - [System Architecture Diagram](#system-architecture-diagram)
+  - [Sequence Diagram for User Registration](#sequence-diagram-for-user-registration)
+  - [Sequence Diagram for Chat Session Management](#sequence-diagram-for-chat-session-management)
+  - [Sequence Diagram for Messaging](#sequence-diagram-for-messaging)
 
-## Features
-- User registration and login.
-- Anonymous chat sessions.
-- Message exchange in real-time.
-- WebSocket support for real-time updates.
+## Architecture
 
-## Frontend
-The frontend is built using WPF in C#.
+AnonyChat consists of three main components:
+1. **WPF Client**: The frontend built using WPF (Windows Presentation Foundation).
+2. **Backend API**: The backend server that handles requests and responses.
+3. **Database**: Stores user data, chat sessions, and messages.
 
-### Classes
+## Communication Flow
 
-#### `Window1.xaml.cs`
-Handles user registration.
+### WPF Client
+The WPF client handles user interactions and communicates with the backend API to perform actions such as finding a chat session, sending messages, and leaving a chat.
 
-- **Methods:**
-  - `AddUser`: Registers a new user.
-  - `SendPostRequestAsync`: Sends a POST request to register a new user.
+Key methods:
+- `FindChatButton()`: Initiates a request to find a free chat session.
+- `LeaveChatButton()`: Sends a request to leave the current chat session.
+- `SendButton()`: Sends a message to the current chat session.
+- `UpdateChat()`: Periodically checks for new messages in the chat session.
 
-#### `MainWindow.xaml.cs`
-Handles the main chat functionalities.
+### Backend API
+The backend API provides endpoints for user registration, finding chat sessions, sending messages, and retrieving chat history. It interacts with the database to store and retrieve data.
 
-- **Methods:**
-  - `FindChatButton`: Starts a new chat session.
-  - `LeaveChatButton`: Leaves the current chat session.
-  - `addMessageToChat`: Adds a message to the chat window.
-  - `getFreeChatSession`: Fetches a free chat session.
-  - `UpdateChat`: Updates the chat with new messages.
-  - `SendButton`: Sends a new message.
-  - `SendMessage`: Sends a message to the backend.
+Key controllers:
+- `UserController`: Handles user-related operations.
+- `ChatController`: Manages chat sessions.
+- `MessageController`: Handles sending and retrieving messages.
 
-#### Models
-
-- **User**
-  - Represents a user in the application.
-
-- **Message**
-  - Represents a message in a chat session.
-
-- **ChatSession**
-  - Represents a chat session.
-
-## Backend
-The backend is built using Spring Boot in Java.
-
-### Controllers
-
-#### `ChatController`
-Handles chat session-related operations.
-
-- **Endpoints:**
-  - `POST /chat/freeSession`: Fetches or creates a free chat session.
-  - `POST /chat/greet`: Returns a greeting message.
-  - `GET /chat/getGreet`: Returns a greeting message using a GET request.
-  - `GET /chat/less2`: Fetches users with ID less than a given number.
-  - `GET /chat/findByID`: Fetches users by chat session ID.
-
-#### `MessageController`
-Handles message-related operations.
-
-- **Endpoints:**
-  - `POST /message/sendMessage`: Sends a message.
-  - `POST /message/getMessages`: Fetches messages for a chat session.
-
-#### `UserController`
-Handles user-related operations.
-
-- **Endpoints:**
-  - `POST /user/getUser`: Registers a new user.
-
-### Models
-
-- **User**
-  - Represents a user in the system.
-
-- **Message**
-  - Represents a message in the system.
-
-- **ChatSession**
-  - Represents a chat session in the system.
-
-- **MessageDTO**
-  - Data Transfer Object for messages.
-
-### Repositories
-
-- **ChatSessionRepository**
-  - Custom queries for chat sessions.
-
-- **MessageRepository**
-  - Custom queries for messages.
-
-- **UserRepository**
-  - Custom queries for users.
-
-### Services
-
-- **ChatSessionService**
-  - Business logic for chat sessions.
-
-- **MessageService**
-  - Business logic for messages.
-
-- **StompMessageService**
-  - Service for sending messages using STOMP protocol.
-
-- **UserService**
-  - Business logic for users.
-
-## Getting Started
-
-### Prerequisites
-- [.NET](https://dotnet.microsoft.com/download)
-- [Java 11+](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)
-- [Maven](https://maven.apache.org/install.html)
-
-### Installation
-
-1. Clone the repository:
-    ```sh
-    git clone https://github.com/your-repo/anonychat.git
-    ```
-
-2. Navigate to the project directory:
-    ```sh
-    cd anonychat
-    ```
-
-### Running the Application
-
-#### Backend
-
-1. Navigate to the backend directory:
-    ```sh
-    cd backend
-    ```
-
-2. Build and run the backend application:
-    ```sh
-    mvn spring-boot:run
-    ```
-
-#### Frontend
-
-1. Open the frontend solution in Visual Studio.
-2. Build and run the frontend application.
+### Database
+The database stores user information, chat sessions, and messages. It ensures data persistence and consistency across the application.
 
 ## API Endpoints
 
@@ -185,16 +73,6 @@ Handles user-related operations.
   - **Description:** Fetches or creates a free chat session.
   - **Request Body:** `Integer id`
   - **Response:** `ChatSession`
-
-- `POST /chat/greet`
-  - **Description:** Returns a greeting message.
-  - **Request Body:** `Integer id`
-  - **Response:** `String`
-
-- `GET /chat/getGreet`
-  - **Description:** Returns a greeting message using a GET request.
-  - **Request Params:** `String name`
-  - **Response:** `String`
 
 - `GET /chat/less2`
   - **Description:** Fetches users with ID less than a given number.
@@ -225,3 +103,39 @@ Handles user-related operations.
   - **Request Body:** `User`
   - **Response:** `User`
 
+## Database Schema
+
+- **Users**: Stores user details such as user ID and username.
+- **ChatSessions**: Stores information about chat sessions.
+- **Messages**: Stores chat messages with references to user and chat session IDs.
+
+## Code Walkthrough
+
+### MainWindow.xaml.cs
+Handles the main functionality of the WPF client, including UI interactions and communication with the backend API.
+
+- `MainWindow()`: Initializes the main window and displays the registration dialog.
+- `FindChatButton()`: Starts the process of finding a chat session.
+- `LeaveChatButton()`: Sends a request to leave the chat session.
+- `SendButton()`: Sends a message to the chat session.
+- `UpdateChat()`: Periodically checks for new messages and updates the chat window.
+
+### Window1.xaml.cs
+Handles user registration.
+
+- `AddUser()`: Registers a new user by sending a request to the backend API.
+- `usernameTextBox_TextChanged()`: Validates the username input.
+
+## UML Diagrams
+
+### 1. System Architecture Diagram
+![System Architecture Diagram](Assets/System_Architecture.png)
+
+### 2. Sequence Diagram for User Registration
+![User Registration Sequence Diagram](Assets/Sequence_User_Registration.png)
+
+### 3. Sequence Diagram for Chat Session Management
+![Chat Session Sequence Diagram](Assets/Sequence_ChatSession_Management.png)
+
+### 4. Sequence Diagram for Messaging
+![Messaging Sequence Diagram](Assets/Sequence_Messaging.png)
